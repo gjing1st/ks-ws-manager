@@ -5,12 +5,6 @@ import (
 	"time"
 )
 
-const (
-	repoName      = "harbor-helm"
-	appName       = "tna"
-	repoWorkSpace = "tna"
-)
-
 type TokenRequest struct {
 	GrantType    string `json:"grant_type"`
 	Username     string `json:"username"`
@@ -306,9 +300,7 @@ type CreateConfigMapRequest struct {
 			} `json:"metadata"`
 		} `json:"template"`
 	} `json:"spec"`
-	Data struct {
-		ConfigYml string `json:"config.yml"`
-	} `json:"data"`
+	Data interface{} `json:"data"`
 }
 
 // NewCreateConfigMap
@@ -318,7 +310,7 @@ type CreateConfigMapRequest struct {
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2023/4/26 19:48
-func NewCreateConfigMap(projectName, data, configMapName string) (req CreateConfigMapRequest) {
+func NewCreateConfigMap(projectName string, data interface{}, configMapName string) (req CreateConfigMapRequest) {
 	metadata := ConfigMapMetadata{
 		Annotations: struct {
 			KubesphereIoCreator string `json:"kubesphere.io/creator"`
@@ -330,9 +322,10 @@ func NewCreateConfigMap(projectName, data, configMapName string) (req CreateConf
 		APIVersion:        "v1",
 		Kind:              "ConfigMap",
 		ConfigMapMetadata: metadata,
-		Data: struct {
-			ConfigYml string `json:"config.yml"`
-		}(struct{ ConfigYml string }{ConfigYml: data}),
+		Data:              data,
+		//Data: struct {
+		//	ConfigYml string `json:"config.yml"`
+		//}(struct{ ConfigYml string }{ConfigYml: data}),
 	}
 	return
 }

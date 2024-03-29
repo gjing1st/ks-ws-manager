@@ -28,6 +28,11 @@ type WorkSpace struct {
 	*k8sConfig
 }
 
+func (ws *WorkSpace) SetConfig(ks *k8sConfig) *WorkSpace {
+	ws.k8sConfig = ks
+	return ws
+}
+
 // Set
 // @Description  内存变量过期 类redis
 // @param: key 变量名
@@ -137,7 +142,7 @@ func (ws *WorkSpace) CreateRepos(workspace, repoName, projectName string) (*Crea
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2023/4/26 19:32
-func (ws *WorkSpace) CreateConfigMap(projectName, data string) error {
+func (ws *WorkSpace) CreateConfigMap(projectName string, data interface{}) error {
 	reqData := NewCreateConfigMap(projectName, data, ws.configmapName)
 	reqUrl := ws.ksAddr + "/api/v1/namespaces/" + projectName + "/configmaps"
 	return ws.HttpPost(reqUrl, reqData, nil)

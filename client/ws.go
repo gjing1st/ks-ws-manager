@@ -22,8 +22,7 @@ type DeployInNewWS interface {
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2023/4/27 11:17
-func DeployWSApp(unitId, unitName, configmapData string) (err error) {
-	var ws WorkSpace
+func (ws *WorkSpace) DeployWSApp(unitId, appName string, configmapData interface{}) (err error) {
 	//1. 创建企业空间
 	err = ws.CreateWorkspaces(unitId)
 	if err != nil {
@@ -66,8 +65,7 @@ func DeployWSApp(unitId, unitName, configmapData string) (err error) {
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2023/4/27 12:14
-func DropWorkSpace(unitId string) (err error) {
-	var ws WorkSpace
+func (ws *WorkSpace) DropWorkSpace(unitId string) (err error) {
 	//删除企业空间下所有资源，方便下次添加
 	err = ws.DeleteWS(unitId)
 	return

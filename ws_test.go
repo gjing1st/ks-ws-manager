@@ -1,12 +1,11 @@
-# ks-ws-manger
-基于kubersphere企业空间的多租户管理服务
-##
+// Path:
+// FileName: ws_test.go
+// Created by dkedTeam
+// Author: GJing
+// Date: 2024/3/29$ 17:15$
 
-## 使用
-### 创建企业空间
-- 需要传入唯一id，该id将被用做企业空间和项目名称
-- 配置字典传入配置文件和对应内容(可定义一个结构体传入)参考示例
-```go
+package ks_ws_manager
+
 import (
 	"fmt"
 	"github.com/gjing1st/ks-ws-manager/client"
@@ -21,22 +20,35 @@ func TestDeployWSApp(t *testing.T) {
 	ws.SetConfig(ks)
 	//配置字典信息
 	data := struct {
-		ConfigYml string `json:"config.yml"` //配置文件config.yml及其对应内容
+		ConfigYml string `json:"config.yml"`     //配置文件config.yml及其对应内容
 		MysqlConf string `json:"mysql_conf.yml"` //mysql_conf.yml及其对应内容
 	}{}
-	data.ConfigYml = ``
-	data.MysqlConf = ``
-	err := ws.DeployWSApp("test-ws", data)
+	data.ConfigYml = `
+    port: 3306
+    username: super_user
+    maxidleconn: 10
+    maxopenconn: 100`
+	data.MysqlConf = `
+	log:
+	  # std|file
+	  output: std
+	  # trace|debug|info|warn
+	  level: info
+	  # 是否打印调用者信息
+	  caller: true
+	  # 日志目录
+	  dir: ./log
+	#web基础配置
+	web:
+	  port: 8801
+	  #跨域开关
+	  cors: true
+	  #接口权限验证开关
+	  auth: true`
+	err := ws.DeployWSApp("test-ws", "app", data)
 	fmt.Println("err", err)
 }
-```
-### 删除企业空间
-```go
-import (
-    "fmt"
-    "github.com/gjing1st/ks-ws-manager/client"
-    "testing"
-)
+
 func TestDropWS(t *testing.T) {
 	//实例化ks相关信息
 	ks := client.NewK8SConfig()
@@ -46,4 +58,3 @@ func TestDropWS(t *testing.T) {
 	err := ws.DropWorkSpace("test-ws")
 	fmt.Println(err)
 }
-```
