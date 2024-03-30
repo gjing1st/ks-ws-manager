@@ -142,8 +142,8 @@ func (ws *WorkSpace) CreateRepos(workspace, repoName, projectName string) (*Crea
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2023/4/26 19:32
-func (ws *WorkSpace) CreateConfigMap(projectName string, data interface{}) error {
-	reqData := NewCreateConfigMap(projectName, data, ws.configmapName)
+func (ws *WorkSpace) CreateConfigMap(projectName, configmapName string, data interface{}) error {
+	reqData := NewCreateConfigMap(projectName, data, configmapName)
 	reqUrl := ws.ksAddr + "/api/v1/namespaces/" + projectName + "/configmaps"
 	return ws.HttpPost(reqUrl, reqData, nil)
 }
@@ -171,13 +171,12 @@ func (ws *WorkSpace) GetAppList(repoId string) (res *ReposAppsResponse, err erro
 }
 
 // CreateApp
-// @Description 部署应用，该方法涉及其他方法
+// @Description 部署应用，该方法涉及其他方法，使用应用列表中的第一个应用仓库
 // @params
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2023/4/27 10:46
 func (ws *WorkSpace) CreateApp(workspace, namespace, appName string) error {
-	//TODO 使用同一个仓库部署应用
 	//获取仓库列表
 	repos, err := ws.GetRepoList(workspace)
 	if err != nil {

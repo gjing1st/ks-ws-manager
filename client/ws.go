@@ -45,7 +45,7 @@ func (ws *WorkSpace) DeployWSApp(unitId, appName string, configmapData interface
 	//fmt.Println("repo", repo.RepoId)
 	// 4.创建数据字典
 	//err = ws.CreateConfigMap(unitId, assembleDataDictUseObject(unitId, unitName))
-	err = ws.CreateConfigMap(unitId, configmapData)
+	err = ws.CreateConfigMap(unitId, ws.configmapName, configmapData)
 	if err != nil {
 		//删除企业空间下所有资源，方便下次添加
 		_ = ws.DeleteWS(unitId)
@@ -78,3 +78,26 @@ func (ws *WorkSpace) DropWorkSpace(unitId string) (err error) {
 //	confByte, _ := yaml.Marshal(conf)
 //	return string(confByte)
 //}
+
+// DeployWSProject
+// @Description 创建企业空间和项目
+// @params wsName string 企业空间名称
+// @params projectName string 项目/namespace名称
+// @contact.name GJing
+// @contact.email gjing1st@gmail.com
+// @date 2024/3/30 10:14
+func (ws *WorkSpace) DeployWSProject(wsName, projectName string) (err error) {
+	//1. 创建企业空间
+	err = ws.CreateWorkspaces(wsName)
+	if err != nil {
+		//创建失败
+		return
+	}
+	// 2.创建项目
+	err = ws.CreateProject(projectName, wsName)
+	if err != nil {
+		//删除企业空间下所有资源，方便下次添加
+		_ = ws.DeleteWS(wsName)
+	}
+	return err
+}

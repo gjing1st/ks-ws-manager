@@ -26,7 +26,7 @@ func TestDeployWSApp(t *testing.T) {
 	}{}
 	data.ConfigYml = ``
 	data.MysqlConf = ``
-	err := ws.DeployWSApp("test-ws", data)
+	err := ws.DeployWSApp("test-ws","app", data)
 	fmt.Println("err", err)
 }
 ```
