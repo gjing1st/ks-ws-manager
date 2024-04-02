@@ -323,7 +323,8 @@ func (ws *WorkSpace) DeleteWS(name string) (err error) {
 // @contact.name GJing
 // @contact.email gjing1st@gmail.com
 // @date 2024/4/2 16:40
-func (ws *WorkSpace) OpenNodePort(projectName, serviceName, serviceYml string) (nodePort uint16, err error) {
+func (ws *WorkSpace) OpenNodePort(projectName, serviceName string) (nodePort uint16, err error) {
+	serviceYml := ws.GetServiceYaml(projectName, serviceName)
 	//替换开启nodePort
 	serviceYml = strings.Replace(serviceYml, `"type":"ClusterIP"`, `"type": "NodePort"`, -1)
 	reqUrl := ws.ksAddr + fmt.Sprintf("/api/v1/namespaces/%s/services/%s", projectName, serviceName)
