@@ -142,6 +142,15 @@ type TemplateSpec struct {
 	Manager string `json:"manager"`
 }
 
+type ServiceYmlResp struct {
+	ServiceSpec struct {
+		Ports []ServicePorts `json:"ports"`
+	} `json:"spec"`
+}
+type ServicePorts struct {
+	NodePort uint16 `json:"nodePort"`
+}
+
 // NewCreateWorkspacesRequest
 // @description: 初始化创建企业空间请求参数
 // @param:

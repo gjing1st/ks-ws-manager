@@ -71,7 +71,7 @@ func TestDeployWS(t *testing.T) {
 	  #接口权限验证开关
 	  auth: true`
 	//2.创建配置字典1
-	err = ws.CreateConfigMap(pName, "mapName1", mapData1)
+	err = ws.CreateConfigMap(pName, "map-name1", mapData1)
 	if err != nil {
 		_ = ws.DropWorkSpace(wsName)
 	}
@@ -93,12 +93,12 @@ func TestDeployWS(t *testing.T) {
 	  #接口权限验证开关
 	  auth: true`
 	//3.创建配置2
-	err = ws.CreateConfigMap(pName, "mapName2", mapData1)
+	err = ws.CreateConfigMap(pName, "map-mame2", mapData2)
 	if err != nil {
 		_ = ws.DropWorkSpace(wsName)
 	}
 	//4.创建应用
-	err = ws.CreateApp(wsName, pName, "appName")
+	err = ws.CreateApp(wsName, pName, "app-name")
 	if err != nil {
 		//删除企业空间下所有资源，方便下次添加
 		_ = ws.DropWorkSpace(wsName)

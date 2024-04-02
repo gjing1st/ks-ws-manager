@@ -98,3 +98,25 @@ func (ws *WorkSpace) HttpDelete(reqUrl string) error {
 	}
 	return nil
 }
+
+func (ws *WorkSpace) HttpPut(reqUrl string, reqData, res interface{}) error {
+	token, err1 := ws.GetToken()
+	if err1 != nil {
+		return err1
+	}
+	client := resty.New()
+	request := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Authorization", token).
+		SetBody(reqData)
+
+	if res != nil {
+		request.SetResult(res)
+	}
+	resp, err := request.Put(reqUrl)
+	if err != nil || (resp.StatusCode() != http.StatusOK && resp.StatusCode() != http.StatusCreated) {
+		ks_error.DebugLog("请求k8s失败", err, "reqUrl=", reqUrl, "resp=", resp)
+		return err
+	}
+	return nil
+}

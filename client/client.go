@@ -16,6 +16,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 )
@@ -312,4 +313,46 @@ func (ws *WorkSpace) DeleteWS(name string) (err error) {
 		ks_error.DebugLog("删除企业空间及其下资源失败", err)
 	}
 	return err
+}
+
+// OpenNodePort
+// @Description 开启nodePort外部访问模式
+// @params  projectName string 项目名称/namespace名称
+// @params  serviceName string 服务名称
+// @params  serviceYml string 服务的yaml文件，此处为ws.GetServiceYaml返回的数据
+// @contact.name GJing
+// @contact.email gjing1st@gmail.com
+// @date 2024/4/2 16:40
+func (ws *WorkSpace) OpenNodePort(projectName, serviceName, serviceYml string) (nodePort uint16, err error) {
+	//替换开启nodePort
+	serviceYml = strings.Replace(serviceYml, `"type":"ClusterIP"`, `"type": "NodePort"`, -1)
+	reqUrl := ws.ksAddr + fmt.Sprintf("/api/v1/namespaces/%s/services/%s", projectName, serviceName)
+	res := &ServiceYmlResp{}
+	err = ws.HttpPut(reqUrl, serviceYml, res)
+	if err != nil {
+		ks_error.DebugLog("开启nodeport失败", err, "namespaces", projectName, "serviceName", serviceName)
+		return
+	}
+	if len(res.ServiceSpec.Ports) > 0 {
+		nodePort = res.ServiceSpec.Ports[0].NodePort
+	}
+	return
+}
+
+// GetServiceYaml
+// @Description 获取服务的yaml文件
+// @params  projectName string 项目名称/namespace名称
+// @params  serviceName string 服务名称
+// @contact.name GJing
+// @contact.email gjing1st@gmail.com
+// @date 2024/4/2 16:40
+func (ws *WorkSpace) GetServiceYaml(projectName, serviceName string) string {
+	reqUrl := ws.ksAddr + fmt.Sprintf("/api/v1/namespaces/%s/services/%s", projectName, serviceName)
+	var res interface{}
+	err := ws.HttpGet(reqUrl, nil, &res)
+	if err != nil {
+		ks_error.DebugLog("开启nodeport失败", err, "namespaces", projectName, "serviceName", serviceName)
+	}
+	resp, _ := json.Marshal(res)
+	return string(resp)
 }
