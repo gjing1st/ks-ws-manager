@@ -6,6 +6,8 @@
 
 package client
 
+import ks_error "github.com/gjing1st/ks-ws-manager/error"
+
 type DeployInNewWS interface {
 	CreateWorkspaces(unitId string) error
 	CreateProject(name, workspace string) error
@@ -88,10 +90,12 @@ func (ws *WorkSpace) DropWorkSpace(unitId string) (err error) {
 // @date 2024/3/30 10:14
 func (ws *WorkSpace) DeployWSProject(wsName, projectName string) (err error) {
 	//1. 创建企业空间
+	//TODO 先查询企业空间是否已创建
 	err = ws.CreateWorkspaces(wsName)
 	if err != nil {
 		//创建失败
-		return
+		ks_error.DebugLog("企业空间创建失败,err:", err.Error())
+		//return
 	}
 	// 2.创建项目
 	err = ws.CreateProject(projectName, wsName)

@@ -155,7 +155,7 @@ type ServicePorts struct {
 // @description: 初始化创建企业空间请求参数
 // @param:
 // @author: GJing
-// @email: guojing@tna.cn
+// @email: gjing1st@gmail.com
 // @date: 2022/8/30 20:45
 // @success:
 func NewCreateWorkspacesRequest(name string) (req CreateWorkspacesRequest) {
@@ -171,7 +171,7 @@ func NewCreateWorkspacesRequest(name string) (req CreateWorkspacesRequest) {
 		Annotations{
 			AliasName:   name,
 			Creator:     "admin",
-			Description: "用户单位" + name + "的企业空间",
+			Description: name + "的企业空间",
 		},
 	}
 	req = CreateWorkspacesRequest{
@@ -181,6 +181,49 @@ func NewCreateWorkspacesRequest(name string) (req CreateWorkspacesRequest) {
 		spec,
 	}
 	return req
+}
+
+type NewCreateUserReq struct {
+	ApiVersion   string `json:"apiVersion"`
+	Kind         string `json:"kind"`
+	UserMetadata `json:"metadata"`
+	UserSpec     `json:"spec"`
+}
+type UserSpec struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+type UserMetadata struct {
+	Name            string `json:"name"`
+	UserAnnotations `json:"annotations"`
+}
+type UserAnnotations struct {
+	Globalrole    string `json:"iam.kubesphere.io/globalrole"`
+	Uninitialized string `json:"iam.kubesphere.io/uninitialized"`
+	Creator       string `json:"kubesphere.io/creator"`
+}
+
+func NewCreateUserRequest(name, passwd, role string) (req NewCreateUserReq) {
+	userSpec := UserSpec{
+		Email:    "1@a.com",
+		Password: passwd,
+	}
+	userMetadata := UserMetadata{
+		Name: name,
+		UserAnnotations: UserAnnotations{
+			Globalrole:    role,
+			Uninitialized: "true",
+			Creator:       "admin",
+		},
+	}
+	req = NewCreateUserReq{
+		ApiVersion:   "iam.kubesphere.io/v1alpha2",
+		Kind:         "User",
+		UserSpec:     userSpec,
+		UserMetadata: userMetadata,
+	}
+	return req
+
 }
 
 type CreateProjectRequest struct {
@@ -202,7 +245,7 @@ type CreateProjectLabels struct {
 // @description: 创建项目初始化请求参数
 // @param:
 // @author: GJing
-// @email: guojing@tna.cn
+// @email: gjing1st@gmail.com
 // @date: 2022/9/1 10:39
 // @success:
 func NewCreateProjectRequest(name, workspace string) (req CreateProjectRequest) {
@@ -253,7 +296,7 @@ func NewCreateRepoRequest(url, repoName, projectName string) (req CreateRepoRequ
 		providers,
 		"Helm",
 		"30m",
-		"http",
+		"https",
 		fmt.Sprintf("%s/chartrepo/%s", url, projectName),
 		"public",
 	}

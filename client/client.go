@@ -109,6 +109,15 @@ func (ws *WorkSpace) CreateWorkspaces(name string) error {
 	return ws.HttpPost(reqUrl, reqData, nil)
 
 }
+func (ws *WorkSpace) CreateUser(name, passwd, role string) error {
+	reqUrl := ws.ksAddr + "/kapis/iam.kubesphere.io/v1alpha2/users"
+	reqData := NewCreateUserRequest(name, passwd, role)
+	err := ws.HttpPost(reqUrl, reqData, nil)
+	if err != nil {
+		ks_error.DebugLog("创建用户失败", err)
+	}
+	return err
+}
 
 // CreateProject
 // @Description: 创建企业空间下的项目
